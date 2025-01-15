@@ -1,0 +1,48 @@
+<html lang="en">
+ <head> 
+  <meta charset="UTF-8"> 
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"> 
+  <title>est_api</title> 
+ </head> 
+ <body id="v1"> 
+  <script>
+        function getParams(key) {
+            var reg = new RegExp("(^|&)" + key + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r!= null) {
+                return r[2];
+            }
+            return null;
+        };
+        console.log("参数:" + getParams("data"));
+        if (getParams("data") == null) {
+            document.write("ERROR! NO DATA!");
+        } else {
+            let data = getParams("data");
+            let result = [];
+            let s = decodeURIComponent(data);
+            console.log(s);
+            // 将 s 解析为对象
+            s = JSON.parse(s); 
+            if (s.info && s.info.xtlist) {
+                for (let item of s.info.xtlist) {
+                    console.log(item);
+                    let answer = item.answer;
+                    if (item.xxlist) {
+                        for (let option of item.xxlist) {
+                            if (option.xx_mc === answer) {
+                                result.push(answer + ':' + option.xx_nr);
+                            }
+                        }
+                    }
+                }
+                console.log(result);
+                let jsonData = JSON.stringify(result);
+                document.write('{"result":'+jsonData+"}");
+            } else {
+                console.error('数据结构不完整，缺少 info 或 xtlist 属性');
+            }
+        }
+    </script>  
+ </body>
+</html>
